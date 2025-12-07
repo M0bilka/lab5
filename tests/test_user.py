@@ -26,16 +26,21 @@ def test_get_existed_user():
 
 def test_get_unexisted_user():
     '''Получение несуществующего пользователя'''
-    pass
+    response = client.get("/api/v1/user", params={'email': 'notrealemail@mail.com'})
+    assert response.status_code == 404
 
 def test_create_user_with_valid_email():
     '''Создание пользователя с уникальной почтой'''
-    pass
+    response = client.post("/api/v1/user", json={'name': 'Anton Antonov', 'email': 'a.a.antonov@mail.com'})
+    assert response.status_code == 201
+    assert isinstance(response.json(), int)
 
 def test_create_user_with_invalid_email():
     '''Создание пользователя с почтой, которую использует другой пользователь'''
-    pass
+    response = client.post("/api/v1/user", json={'name': 'Ilya Ivanov', 'email': users[0]['email']})
+    assert response.status_code == 409
 
 def test_delete_user():
     '''Удаление пользователя'''
-    pass
+    response = client.delete("/api/v1/user", params={'email': users[0]['email']})
+    assert response.status_code == 204
